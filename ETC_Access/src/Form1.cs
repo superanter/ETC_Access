@@ -124,5 +124,9 @@ namespace ETC_Access
             }
             comboBox1.DataSource = strTemp;
         }
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            SeachNomber(textBox1.Text.ToString());
+        }
     }
 }
