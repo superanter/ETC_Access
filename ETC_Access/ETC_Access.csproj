@@ -93,6 +93,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="doc\编写记录.txt" />
+    <Content Include="mdb\back\EtcAccess_20180505.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="mdb\EtcAccess.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
