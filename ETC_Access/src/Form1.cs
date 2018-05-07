@@ -130,36 +130,31 @@ namespace ETC_Access
         {
             thisDataSet.Tables["B002"].Clear();
 
-            foreach (DataRow x_A007 in thisDataSet.Tables["A007"].Rows)
+            foreach (DataRow x_A003 in thisDataSet.Tables["A003"].Rows)
             {
+                string A003S, A004S, A005S, A006S;
 
-                if (strString == "" || x_A007["c_Name"].ToString().StartsWith(strString.ToString()))
+                foreach (DataRow x_A007 in x_A003.GetChildRows(thisDataSet.Relations["A003toA007"]))
                 {
-                    //object[] aa = thisDataSet.Tables["A003"].;
-;
-                    object[] rowVals = new object[9]
                     {
-                        x_A007["c_ID"],
-                        x_A007["c_Name"],
-                        x_A007["c_Lng"].ToString().Insert(9,"\"").Insert(7,".").Insert(5,"\'").Insert(3,"°"),
-                        x_A007["c_Lat"].ToString().Insert(8,"\"").Insert(6,".").Insert(4,"\'").Insert(2,"°"),
-                        x_A007["c_Text"],
-                        x_A007["c_A003_ID"],
-                        x_A007["c_A004_ID"],
-                        x_A007["c_A005_ID"],
-                        x_A007["c_A006_ID"]
-                        //thisDataSet.Relations["A003toA007"].ChildColumns[0],
-                        //thisDataSet.Relations["A003toA007"].ChildColumns[0],
-                        //thisDataSet.Relations["A003toA007"].ChildColumns[0],
-                        //thisDataSet.Relations["A003toA007"].ChildColumns[0]
-                        //thisDataSet.Relations["A003toA007"].
-                        //thisDataSet.Relations["A004toA007"].["c_Name"],
-                        //x_A005["c_Name"],
-                        //x_A006["c_Name"]
-                    };
+                        if (strString == "" || x_A007["c_Name"].ToString().StartsWith(strString.ToString()))
+                        {
+                            object[] rowVals = new object[9]
+                            {
+                                x_A007["c_ID"],
+                                x_A007["c_Name"],
+                                x_A007["c_Lng"].ToString().Insert(9,"\"").Insert(7,".").Insert(5,"\'").Insert(3,"°"),
+                                x_A007["c_Lat"].ToString().Insert(8,"\"").Insert(6,".").Insert(4,"\'").Insert(2,"°"),
+                                x_A007["c_Text"],
+                                x_A003["c_Name"],
+                                x_A007["c_A004_ID"],
+                                x_A007["c_A005_ID"],
+                                x_A007["c_A006_ID"]
+                            };
 
-                    thisDataSet.Tables["B002"].Rows.Add(rowVals);
-
+                            thisDataSet.Tables["B002"].Rows.Add(rowVals);
+                        }
+                    }
                 }
             }
         }
