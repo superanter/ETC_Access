@@ -33,6 +33,22 @@ namespace ETC_Access
             OleDbDataAdapter thisAdapter5 = new OleDbDataAdapter("Select * From A005 Order by c_ID", con);
             OleDbDataAdapter thisAdapter6 = new OleDbDataAdapter("Select * From A006 Order by c_ID", con);
             OleDbDataAdapter thisAdapter7 = new OleDbDataAdapter("Select * From A007 Order by c_ID", con);
+            string temp1 = "Select A007.c_ID as 序号,";
+            temp1 += "A007.c_Name as 名称,";
+            temp1 += "FORMAT(A007.c_Lng/100,'000°00′00.00″') as 精度,";
+            temp1 += "FORMAT(A007.c_Lat/100,'00°00′00.00″') as 纬度,";
+            temp1 += "A007.c_Text as 备注,";
+            temp1 += "A003.c_Name as 高速,";
+            temp1 += "A004.c_Name as 已核对,";
+            temp1 += "A005.c_Name as 出口标记类型,";
+            temp1 += "A006.c_Name as 省份";
+            temp1 += " From A003,A004,A005,A006,A007";
+            temp1 += " Where A003.c_ID = A007.c_A003_ID";
+            temp1 += " and A004.c_ID = A007.c_A004_ID";
+            temp1 += " and A005.c_ID = A007.c_A005_ID";
+            temp1 += " and A006.c_ID = A007.c_A006_ID";
+            temp1 += " Order by A007.c_ID";
+            OleDbDataAdapter thisAdapterB2 = new OleDbDataAdapter(temp1, con);
 
             thisAdapter1.Fill(thisDataSet, "A001");
             thisAdapter2.Fill(thisDataSet, "A002");
@@ -41,6 +57,7 @@ namespace ETC_Access
             thisAdapter5.Fill(thisDataSet, "A005");
             thisAdapter6.Fill(thisDataSet, "A006");
             thisAdapter7.Fill(thisDataSet, "A007");
+            thisAdapterB2.Fill(thisDataSet, "B002");
 
             thisDataSet.Tables["A003"].Columns["c_ID"].AutoIncrement = true;
 
@@ -59,7 +76,6 @@ namespace ETC_Access
             thisDataSet.Tables["B001"].Columns.Add("高速编号");
             thisDataSet.Tables["B001"].Columns.Add("高速名称");
 
-
             thisDataSet.Tables["A007"].Columns["c_ID"].AutoIncrement = true;
 
             DataRelation thisA004toA007 = thisDataSet.Relations.Add("A004toA007",
@@ -77,7 +93,7 @@ namespace ETC_Access
             DataRelation thisA003toA007 = thisDataSet.Relations.Add("A003toA007",
              thisDataSet.Tables["A003"].Columns["c_ID"],
                 thisDataSet.Tables["A007"].Columns["c_A003_ID"]);
-
+            /*
             thisDataSet.Tables.Add("B002");
             thisDataSet.Tables["B002"].Columns.Add("序号");
             thisDataSet.Tables["B002"].Columns.Add("名称");
@@ -88,14 +104,29 @@ namespace ETC_Access
             thisDataSet.Tables["B002"].Columns.Add("名称核对");
             thisDataSet.Tables["B002"].Columns.Add("出入口标识类型");
             thisDataSet.Tables["B002"].Columns.Add("省份");
-
+            */
             con.Close();
 
             DataTable thisDataTable1 = thisDataSet.Tables["B001"];
             dataGridView1.DataSource = thisDataTable1;
+            dataGridView1.Columns[0].Width = 55;
+            dataGridView1.Columns[1].Width = 80;
+            dataGridView1.Columns[2].Width = 80;
+            dataGridView1.Columns[3].Width = 100;
+            dataGridView1.Columns[4].Width = 125;
+
 
             DataTable thisDataTable2 = thisDataSet.Tables["B002"];
             dataGridView2.DataSource = thisDataTable2;
+            dataGridView2.Columns[0].Width = 55;
+            dataGridView2.Columns[1].Width = 80;
+            dataGridView2.Columns[2].Width = 110;
+            dataGridView2.Columns[3].Width = 100;
+            dataGridView2.Columns[4].Width = 110;
+            dataGridView2.Columns[5].Width = 120;
+            dataGridView2.Columns[6].Width = 80;
+            dataGridView2.Columns[7].Width = 110;
+            dataGridView2.Columns[8].Width = 70;
         }
 
         private void SeachNomberB001(string strString)
@@ -128,33 +159,29 @@ namespace ETC_Access
 
         private void SeachNomberB002(string strString)
         {
+            
             thisDataSet.Tables["B002"].Clear();
 
-            foreach (DataRow x_A003 in thisDataSet.Tables["A003"].Rows)
+            foreach (DataRow x_B002 in thisDataSet.Tables["B002"].Rows)
             {
-                string A003S, A004S, A005S, A006S;
-
-                foreach (DataRow x_A007 in x_A003.GetChildRows(thisDataSet.Relations["A003toA007"]))
+               if (strString == "" || x_B002["c_Name"].ToString().StartsWith(strString.ToString()))
                 {
+                    object[] rowVals = new object[2]
                     {
-                        if (strString == "" || x_A007["c_Name"].ToString().StartsWith(strString.ToString()))
-                        {
-                            object[] rowVals = new object[9]
-                            {
-                                x_A007["c_ID"],
-                                x_A007["c_Name"],
-                                x_A007["c_Lng"].ToString().Insert(9,"\"").Insert(7,".").Insert(5,"\'").Insert(3,"°"),
-                                x_A007["c_Lat"].ToString().Insert(8,"\"").Insert(6,".").Insert(4,"\'").Insert(2,"°"),
+                                x_B002["c_ID"],
+                                x_B002["c_Name"]
+                                /*
+                                x_B002["c_Lng"].ToString().Insert(9,"\"").Insert(7,".").Insert(5,"\'").Insert(3,"°"),
+                                x_B002["c_Lat"].ToString().Insert(8,"\"").Insert(6,".").Insert(4,"\'").Insert(2,"°"),
                                 x_A007["c_Text"],
                                 x_A003["c_Name"],
                                 x_A007["c_A004_ID"],
                                 x_A007["c_A005_ID"],
                                 x_A007["c_A006_ID"]
-                            };
+                                */
+                    };
 
-                            thisDataSet.Tables["B002"].Rows.Add(rowVals);
-                        }
-                    }
+                    thisDataSet.Tables["B002"].Rows.Add(rowVals);
                 }
             }
         }
@@ -186,7 +213,7 @@ namespace ETC_Access
         {
             DataConnect();
             SeachNomberB001("");
-            SeachNomberB002("");
+            //SeachNomberB002("");
 
             object[] strTemp = new object[thisDataSet.Tables["A002"].Rows.Count];
             Temp[1] = new int[thisDataSet.Tables["A002"].Rows.Count];
